@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Confetti from 'react-confetti';
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/components/ui/use-toast";
@@ -15,7 +16,15 @@ const Index = () => {
   const [currentFactIndex, setCurrentFactIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [showScoreModal, setShowScoreModal] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (showConfetti) {
+      const timer = setTimeout(() => setShowConfetti(false), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showConfetti]);
 
   const addFact = () => {
     if (newFact.trim() !== '') {
@@ -60,6 +69,9 @@ const Index = () => {
     } else {
       setGameMode(false);
       setShowScoreModal(true);
+      if (score > facts.length / 2) {
+        setShowConfetti(true);
+      }
     }
   };
 
@@ -71,6 +83,7 @@ const Index = () => {
 
   return (
     <>
+      {showConfetti && <Confetti />}
       <div className="container mx-auto px-4 py-8 bg-white min-h-screen">
         <div className="max-w-3xl mx-auto relative">
           <div className="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-primary"></div>
