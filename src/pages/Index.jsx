@@ -59,10 +59,12 @@ const Index = () => {
     if (currentFactIndex < facts.length - 1) {
       setCurrentFactIndex(currentFactIndex + 1);
     } else {
+      const finalScore = score + (guess === facts[currentFactIndex].person ? 1 : 0);
+      setScore(finalScore);
       setGameMode(false);
       toast({
         title: "Game Over!",
-        description: `Your final score is ${score + (guess === facts[currentFactIndex].person ? 1 : 0)} out of ${facts.length}.`,
+        description: `Your final score is ${finalScore} out of ${facts.length}.`,
       });
     }
   };
@@ -115,13 +117,26 @@ const Index = () => {
           </div>
         ) : (
           <div className="space-y-6 bg-secondary p-8 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold text-center text-primary">Guess who this fact is about:</h2>
-            <p className="text-xl text-center">{facts[currentFactIndex].fact}</p>
-            <div className="flex justify-center space-x-4">
-              <Button onClick={() => handleGuess('bride')} className="bg-primary text-white hover:bg-primary/90">Bride</Button>
-              <Button onClick={() => handleGuess('groom')} className="bg-primary text-white hover:bg-primary/90">Groom</Button>
-            </div>
-            <p className="text-center text-lg">Score: {score} / {currentFactIndex + 1}</p>
+            {currentFactIndex < facts.length ? (
+              <>
+                <h2 className="text-2xl font-semibold text-center text-primary">Guess who this fact is about:</h2>
+                <p className="text-xl text-center">{facts[currentFactIndex].fact}</p>
+                <div className="flex justify-center space-x-4">
+                  <Button onClick={() => handleGuess('bride')} className="bg-primary text-white hover:bg-primary/90">Bride</Button>
+                  <Button onClick={() => handleGuess('groom')} className="bg-primary text-white hover:bg-primary/90">Groom</Button>
+                </div>
+                <p className="text-center text-lg">Score: {score} / {currentFactIndex + 1}</p>
+              </>
+            ) : (
+              <div className="text-center space-y-4">
+                <h2 className="text-3xl font-bold text-primary">Game Over!</h2>
+                <p className="text-2xl">Your final score is:</p>
+                <p className="text-4xl font-bold text-primary">{score} / {facts.length}</p>
+                <Button onClick={() => {setGameMode(false); setCurrentFactIndex(0); setScore(0);}} className="mt-4 bg-primary text-white hover:bg-primary/90">
+                  Play Again
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </div>
