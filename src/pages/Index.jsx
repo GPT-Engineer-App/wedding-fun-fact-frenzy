@@ -41,30 +41,25 @@ const Index = () => {
   };
 
   const handleGuess = (guess) => {
-    if (guess === facts[currentFactIndex].person) {
-      setScore(score + 1);
-      toast({
-        title: "Correct!",
-        description: "You guessed right!",
-        variant: "default",
-      });
-    } else {
-      toast({
-        title: "Wrong!",
-        description: `This fact was about the ${facts[currentFactIndex].person}.`,
-        variant: "destructive",
-      });
-    }
+    const isCorrect = guess === facts[currentFactIndex].person;
+    const newScore = isCorrect ? score + 1 : score;
+    setScore(newScore);
+
+    toast({
+      title: isCorrect ? "Correct!" : "Wrong!",
+      description: isCorrect
+        ? "You guessed right!"
+        : `This fact was about the ${facts[currentFactIndex].person}.`,
+      variant: isCorrect ? "default" : "destructive",
+    });
 
     if (currentFactIndex < facts.length - 1) {
       setCurrentFactIndex(currentFactIndex + 1);
     } else {
-      const finalScore = score + (guess === facts[currentFactIndex].person ? 1 : 0);
-      setScore(finalScore);
       setGameMode(false);
       toast({
         title: "Game Over!",
-        description: `Your final score is ${finalScore} out of ${facts.length}.`,
+        description: `Your final score is ${newScore} out of ${facts.length}.`,
       });
     }
   };
@@ -125,7 +120,7 @@ const Index = () => {
                   <Button onClick={() => handleGuess('bride')} className="bg-primary text-white hover:bg-primary/90">Bride</Button>
                   <Button onClick={() => handleGuess('groom')} className="bg-primary text-white hover:bg-primary/90">Groom</Button>
                 </div>
-                <p className="text-center text-lg">Score: {score} / {currentFactIndex + 1}</p>
+                <p className="text-center text-lg">Score: {score} / {currentFactIndex}</p>
               </>
             ) : (
               <div className="text-center space-y-4">
