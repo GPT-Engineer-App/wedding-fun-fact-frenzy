@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/components/ui/use-toast";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import FactList from '@/components/FactList';
 
 const Index = () => {
@@ -13,6 +14,7 @@ const Index = () => {
   const [gameMode, setGameMode] = useState(false);
   const [currentFactIndex, setCurrentFactIndex] = useState(0);
   const [score, setScore] = useState(0);
+  const [showScoreModal, setShowScoreModal] = useState(false);
   const { toast } = useToast();
 
   const addFact = () => {
@@ -57,11 +59,14 @@ const Index = () => {
       setCurrentFactIndex(currentFactIndex + 1);
     } else {
       setGameMode(false);
-      toast({
-        title: "Game Over!",
-        description: `Your final score is ${newScore} out of ${facts.length}.`,
-      });
+      setShowScoreModal(true);
     }
+  };
+
+  const closeScoreModal = () => {
+    setShowScoreModal(false);
+    setCurrentFactIndex(0);
+    setScore(0);
   };
 
   return (
@@ -136,6 +141,19 @@ const Index = () => {
         )}
       </div>
     </div>
+    <AlertDialog open={showScoreModal} onOpenChange={setShowScoreModal}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Game Over!</AlertDialogTitle>
+          <AlertDialogDescription>
+            Your final score is {score} out of {facts.length}.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogAction onClick={closeScoreModal}>Play Again</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 
